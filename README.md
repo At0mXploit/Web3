@@ -6,8 +6,9 @@ Learning Web3.
 - [Zero Knowledge Proofs Notes](https://github.com/At0mXploit/Web3/blob/main/Zero%20Knowledge%20Proofs%20.pdf)
 - [Foundry Fundamentals](https://github.com/At0mXploit/Web3/tree/main/Foundry-Fundamentals)
 - [Formal Verification](https://github.com/At0mXploit/Web3/tree/main/EVM/Formal-Verification)
-- [Yul](https://github.com/At0mXploit/Web3/tree/main/EVM/Yul)
+- [Yul](https://github.com/At0mXploit/Web3/tree/main/EVM/Yul) - Inine Assembly
 - [Huff](https://github.com/At0mXploit/Web3/tree/main/EVM/Huff)
 - [Breakdown of Solidity in Opcodes](https://github.com/At0mXploit/Web3/tree/main/EVM/Breakdown)
+- [Certora](https://github.com/At0mXploit/Web3/tree/main/EVM/Formal-Verification/Certora) - The Certora Prover is the state-of-the-art security tool for automated formal verification of smart contracts running on EVM-based chains,
 
 ---
