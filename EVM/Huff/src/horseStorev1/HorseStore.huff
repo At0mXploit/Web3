@@ -1,0 +1,47 @@
+// evm.codes
+// Interfaces
+#define function updateHorseNumber(uint256) nonpayable returns()
+#define function ReadNumberOfHorses() view returns(uint256)
+#define constant NUMBER_OF_HORSES_STORAGE_SLOT = FREE_STORAGE_POINTER() // 0
+
+// send calldata -> function dispatch -> function
+#define macro MAIN() = takes(0) returns(0) {
+  // Load calldata and extract the first 4 bytes (function selector)
+  // by right-shifting 224 bits (0xe0)
+  // e.g. 0xcdfead2e00000000000000000000000000000000 >> 224 = 0xcdfead2e
+  0x00 calldataload 0xE0 shr // [func_selector]
+
+  // cast sig "updateHorseNumber(uint256)" = 0xcdfead2e
+  // cast sig "ReadNumberOfHorses()"       = 0xe026c017
+
+  // Duplicate selector on stack — avoids re-reading, saves gas
+  dup1
+  0xcdfead2e eq // func_selector == updateHorseNumber?
+  updateJump jumpi
+
+  0xe026c017 eq // func_selector == ReadNumberOfHorses?
+  readJump jumpi
+
+  0x00 0x00 revert // No matching selector — revert to avoid executing garbage
+ 
+  updateJump:
+    SET_NUMBER_OF_HORSES()
+  readJump:
+    GET_NUMBER_OF_HORSES()
+}
+
+#define macro SET_NUMBER_OF_HORSES() = takes(0) returns(0) {
+  // Load the uint256 argument from calldata (skip the 4-byte selector at offset 0x00)
+  0x04 calldataload         // [value]
+  [NUMBER_OF_HORSES_STORAGE_SLOT] // [slot, value]
+  sstore                    // [] — stores value at slot
+  stop
+}
+
+#define macro GET_NUMBER_OF_HORSES() = takes(0) returns(0) {
+  // Load value from storage, write to memory, return 32 bytes
+  [NUMBER_OF_HORSES_STORAGE_SLOT] // [slot]
+  sload                           // [value]
+  0x00 mstore                     // [] — memory: [value at offset 0]
+  0x20 0x00 return                // return 32 bytes from memory offset 0
+}

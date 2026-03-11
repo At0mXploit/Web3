@@ -1,0 +1,15 @@
+{
+  "name": "Simple IPFS Collection #3",
+  "description": "A small ERC-721 NFT from a simple IPFS-backed Foundry collection.",
+  "image": "ipfs://bafybeifx7yksd4k4x2r5vx6up7h3ynr4l2m6l6f4w6e4h3d5f2pugimage/pug.png",
+  "attributes": [
+    {
+      "trait_type": "Edition",
+      "value": 3
+    },
+    {
+      "trait_type": "Mood",
+      "value": "Sleepy"
+    }
+  ]
+}

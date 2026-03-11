@@ -1,0 +1,78 @@
+
+
+// evm.codes 
+
+// Interfaces
+#define function updateHorseNumber(uint256) nonpayable returns()
+#define function ReadNumberOfHorses() view returns(uint256)
+#define constant NUMBER_OF_HORSES_STORAGE_SLOT = FREE_STORAGE_POINTER() // 0 
+
+// send calldata -> function dispatch -> function
+#define macro MAIN() = takes(0) returns(0) {
+  
+  0x00 // 5F Opcode Push 0 into stack
+  calldata // calldata onto the stack 
+  // Cut down calldata -> function selector liek 0x010200000000000000000000000000000000000 to just its first 4 bytes that are function selector 
+  // Do it using Right Shift
+  // 0x0102(Bytes)
+  // 1 Bytes = 8 bits
+  // 0x0102 >> 4 
+  0xe0
+  shr
+  0x00 calldataload 0xE0 shr // Now we have function selector now we can do saome function dispatching
+  
+  // Jump -> function data associated with the selector
+  // If f_select == updateHorseNumber -> jump to that code
+  // If f_select == readHorseNumber -> jump to that code
+  // cast sig "updateHorseNumber(uint256)" = 0xcdfead2e == update 
+  // cast sig "ReadNumberOfHorses()" = 0xe026c017 == read 
+
+  dup1  // Func selector duplicate more gas efficient than taking from down we can just duplicate it 
+  0xcdfead2e // func selector 
+  eq // if ture if func_selector matches
+
+  // jmp to updateHorseNumber if true 
+  updateJump 
+  jumpi
+
+  // ReadNumberOfHorses, 0xe026c017
+  0xe026c017
+  eq
+  readJump
+  jumpi // jump if true
+
+  0x0 0x0 revert // Prevents from running unecesary down codes
+
+  updateJump:
+    SET_NUMBER_OF_HORSES()
+  readJump:
+    GET_NUMBER_OF_HORSES()
+
+}
+
+#define macro SET_NUMBER_OF_HORSES() = takes(0) returns(0) {
+
+  // 2. Get the value to store from calldata 
+  0x04 // 4
+  calldataload // calldata - func_selector  
+  // 1. Give it a storage slot
+  [NUMBER_OF_HORSES_STORAGE_SLOT]     
+  // 3. Store the opcode 
+  sstore
+  stop 
+}
+
+#define macror GET_NUMBER_OF_HORSES() = takes(0) returns(0) {
+    
+    // 1. Get the storage slot 
+    // 2. Load the value of that slot into memory 
+    // 3. Return 
+    [NUMBER_OF_HORSES_STORAGE_SLOT] // key
+    sload // [value] 
+    0x0 // 0, value 
+    mstore // [] // Memory: [value]
+    0x20 0x00 return // 0x20 = 32 bytes 
+}
+
+
+
